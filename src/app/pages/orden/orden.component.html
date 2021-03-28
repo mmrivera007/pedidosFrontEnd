@@ -1,0 +1,123 @@
+<div *ngIf="!editar" class="mt-3">
+    <h4>Lista de Ordenes</h4>
+    <hr>
+
+    <div class="row">
+        <div class="col table-responsive">
+            <div class="mb-1">
+                <button class="btn btn-success" (click)="cambioPantalla()">
+					<i class="fa fa-plus"></i>
+					Nuevo
+				</button>
+            </div>
+            <table class="table table-bordered table-striped table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <td>#</td>
+                        <td>Cliente</td>
+                        <td>Fecha</td>
+                        <td>Opciones</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let orden of ordenes; let i=index">
+                        <td>{{i + 1}}</td>
+                        <td>{{orden.cliente.nombre}}</td>
+                        <td>{{orden.fecha | date:'fullDate'}}</td>
+                        <td>
+                            <button class="btn btn-info mr-1" (click)="editarOrden(orden)">
+									<i class="fa fa-pen"></i>
+							</button>
+                            <button class="btn btn-success" (click)="borrarOrden(orden, i)">
+									<i class="fa fa-trash"></i>
+							</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <div class="alert alert-info text-center mt-3" *ngIf="ordenes.length == 0">
+        <h4 class="alert-heading">No hay registros</h4>
+        <p><i class="fa fa-exclamation fa-2x"></i></p>
+    </div>
+
+</div>
+
+<div *ngIf="editar" class="mt-3">
+    <h3>Orden</h3>
+    <hr>
+
+    <div class="row">
+        <div class="col text-right">
+            <button type="button" class="btn btn-danger" (click)="cambioPantalla()">
+				<i class="fa fa-arrow-left"></i>
+				Regresar
+			</button>
+        </div>
+    </div>
+
+    <div class="row ">
+        <div class="col">
+            <form (ngSubmit)="guardarOrden( )" [formGroup]="ordenForm">
+                <div class="form-group">
+                    <label>ID</label>
+                    <input type="number" class="form-control" formControlName="id" name="id" placeholder="Id orden">
+                </div>
+                <div class="form-group">
+                    <label>Fecha</label>
+                    <input type="date" class="form-control" formControlName="fecha" name="fecha" placeholder="Apellido orden">
+                </div>
+                <div class="form-group" formGroupName="cliente">
+                    <label>Cliente</label>
+                    <select class="form-select" (change)="seleccionaCliente($event)" formControlName="id" name="idCliente">
+						<option *ngFor="let cliente of clientes" [value]="cliente.id" >{{cliente.nombre}} {{cliente.apellido}}</option>
+					</select>
+                </div>
+                <div class="form-group row mt-3">
+                    <div class="col">
+                        <h4>Detalles</h4>
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Artículo</th>
+                                    <th>Borrar</th>
+                                </tr>
+                            </thead>
+                            <tbody formArrayName="detalles">
+                                <tr *ngFor="let control of detalles.controls; let i=index">
+                                    <td>{{i+1}}</td>
+                                    <td>
+                                        <select class="form-select" (change)="seleccionaArticulo($event, i)" [formControlName]="i">
+											<option *ngFor="let articulo of articulos" [value]="articulo.id" >{{articulo.nombre}}[{{articulo.codigo}}]</option>
+										</select>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger" (click)="borrarDetalle(i)">
+											<i class="fa fa-trash"></i>
+										</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <button class="btn btn-primary mt-3 mb-5 btn-block" type="button" (click)="agregarDetalle()">
+							<i class="fa fa-plus"></i>Agregar detalle
+						</button>
+                    </div>
+                </div>
+                <hr>
+                <div class="form-group text-center">
+                    <button type="submit" class="btn btn-primary w-25">
+						<i class="fa fa-save"></i>
+						Guardar
+					</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>

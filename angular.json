@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "pedidoFront"
+    }
+  },
+  "defaultProject": "pedidoFront",
+  "cli": {
+    "analytics": "d86004b2-f598-42c7-8c37-cfd2547f0c45"
+  }
 }

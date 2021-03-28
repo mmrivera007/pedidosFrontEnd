@@ -1,27 +1,16 @@
-# PedidoFront
+# PedidoFrontEnd
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.2.0.
+Proyecto construido con Angular CLI version 10.2.0, Node 12.18.3. Se deberá contar con estas versiones o superiores para configurar el ambiente de desarrollo. Se utilizó como IDE VSCode.
 
 ## Development server
+Descargue la aplicación en su repositorio local, ejecute el comando `npm install` para descargar todas las dependencias del proyecto.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Ejecute el comando `ng serve` para poner en funcionamiento el proyecto en el entorno de desarrollo. Abra un navegador e ingrese la url `http://localhost:4200/`. 
 
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Nota: previamente deberá tener ya levantado el proyecto de backend de pedidos.
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+Ejecute el comando `ng build`(desarrollo) o `ng build --prod`(producción) para contruir el proyectoto, el resultado se alamcenará en el directorio `dist/`.
 
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Descargue y configure el servidor Nginx, copie la carpeta generada del proyecgto en `html`. Configure el archivo `nginx.conf` la ruta del proyecto y el puerto para acceder desde `http://localhost:4200/`.
