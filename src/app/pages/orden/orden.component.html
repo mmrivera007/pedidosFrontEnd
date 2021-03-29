@@ -64,7 +64,7 @@
             <form (ngSubmit)="guardarOrden( )" [formGroup]="ordenForm">
                 <div class="form-group">
                     <label>ID</label>
-                    <input type="number" class="form-control" formControlName="id" name="id" placeholder="Id orden">
+                    <input type="number" class="form-control" formControlName="id" name="id" placeholder="Id orden" disabled="disabled">
                 </div>
                 <div class="form-group">
                     <label>Fecha</label>
@@ -76,7 +76,7 @@
 						<option *ngFor="let cliente of clientes" [value]="cliente.id" >{{cliente.nombre}} {{cliente.apellido}}</option>
 					</select>
                 </div>
-                <div class="form-group row mt-3">
+                <div class="form-group row mt-3" formArrayName="detalles">
                     <div class="col">
                         <h4>Detalles</h4>
                         <table class="table table-bordered table-striped table-hover">
@@ -84,16 +84,20 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Artículo</th>
+                                    <th>Cantidad</th>
                                     <th>Borrar</th>
                                 </tr>
                             </thead>
-                            <tbody formArrayName="detalles">
-                                <tr *ngFor="let control of detalles.controls; let i=index">
+                            <tbody *ngFor="let control of detalles.controls; let i=index">
+                                <tr [formGroupName]="i">
                                     <td>{{i+1}}</td>
                                     <td>
-                                        <select class="form-select" (change)="seleccionaArticulo($event, i)" [formControlName]="i">
+                                        <select class="form-select" (change)="seleccionaArticulo($event, i)" formControlName="idArticulo">
 											<option *ngFor="let articulo of articulos" [value]="articulo.id" >{{articulo.nombre}}[{{articulo.codigo}}]</option>
 										</select>
+                                    </td>
+                                    <td>
+                                        <input type="number" formControlName="cantidad">
                                     </td>
                                     <td>
                                         <button class="btn btn-danger" (click)="borrarDetalle(i)">
@@ -111,7 +115,7 @@
                 </div>
                 <hr>
                 <div class="form-group text-center">
-                    <button type="submit" class="btn btn-primary w-25">
+                    <button type="submit" class="btn btn-primary w-25" [disabled]="ordenForm.invalid">
 						<i class="fa fa-save"></i>
 						Guardar
 					</button>

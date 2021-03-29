@@ -51,17 +51,19 @@ export class OrdenComponent implements OnInit {
 		return this.ordenForm.get('detalles') as FormArray;
 	}
 	crearForm(){
-		console.log('Creando el formulario:', this.orden.fecha);
+		console.log('Creando el formulario:');
 		this.ordenForm = this.fb.group({
-			id: [{value: this.orden.id, disabled: true}],
+			id: this.orden.id,
 			fecha: [this.datePipe.transform(this.orden.fecha,'yyyy-MM-dd'), Validators.required],
 			cliente: this.fb.group({
 				id:  [this.orden.cliente.id, Validators.required]
 			}),
-			detalles: this.fb.array(this.detallesAux.map(det => det.articulo.id))
+			detalles: this.fb.array([])
 		});
+		this.agregarDetalleForm();
 		console.log('Formulario:', this.ordenForm);
 	}
+
 	obtenerOrdenes(){
 		this.ordenService.getOrdenes(0)
 			.subscribe(ordenes => {
@@ -85,10 +87,22 @@ export class OrdenComponent implements OnInit {
 	}
 
 	agregarDetalle(){
-		this.detalles.push(this.fb.control(0));
-	}	
+		this.detalles.push(this.anadirDetalle(-1, 1));
+	}
+	anadirDetalle(idArticulo: number, cantidad: number) {
+		return this.fb.group({
+		  idArticulo: this.fb.control(idArticulo),
+		  cantidad: this.fb.control(cantidad)
+		});
+	}
 	borrarDetalle(i: number){
 		this.detalles.removeAt(i);
+	}
+
+	agregarDetalleForm(){
+		for(let i = 0; i < this.detallesAux.length; i++) {
+			this.detalles.push(this.anadirDetalle(this.detallesAux[i].articulo.id, this.detallesAux[i].cantidad));
+		}
 	}
 
 	guardarOrden(){
@@ -99,10 +113,7 @@ export class OrdenComponent implements OnInit {
 		}
 		this.orden = Object.assign({}, this.ordenForm.value);
 		
-		console.log('Guardar orden...', this.orden);
-		if(this.orden.id == -1){
-			this.orden.id = null;
-		}
+		console.log('Guardar orden...', {...this.orden});
 		
 		this.ordenService.postOrden(this.orden)
 			.subscribe(
@@ -111,18 +122,11 @@ export class OrdenComponent implements OnInit {
 					if(resp.errors || resp.error){
 						let mensaje = resp.error?resp.error:resp.errors;
 						Swal.fire({
-							text: `Error al guardar el articulo: ${mensaje}`,
+							text: `Error al guardar la orden: ${mensaje}`,
 							icon: 'error'
 						  });
 					}else{
-						Swal.fire({
-							title: this.orden.fecha,
-							text: 'Se actualizó correctamente',
-							icon: 'success'
-						  });
-						  this.guardarDetalles();
-						  this.obtenerOrdenes();
-						  this.cambioPantalla();
+						this.guardarDetalles();
 					}
 				}
 			);
@@ -137,11 +141,13 @@ export class OrdenComponent implements OnInit {
 				detallesAlmacenar.push({
 					id:-1,
 					articulo:{
-						id: this.detalles.at(i).value,
+						id: this.detalles.at(i).get('idArticulo').value,
 						codigo:'',
 						nombre:'',
-						precio:0
+						precio:0,
+						stock:0
 					},
+					cantidad: this.detalles.at(i).get('cantidad').value,
 					orden: this.orden
 				});
 			}
@@ -150,8 +156,27 @@ export class OrdenComponent implements OnInit {
 	}
 	guardarDetalles(){
 		this.formarDetalles();
-		console.log('detalleAux ->',this.detallesAux);
-		this.detalleService.postDetalles(this.orden.id, this.detallesAux).subscribe(console.log);
+		console.log('guardarDetalles ->',this.detallesAux);
+		this.detalleService.postDetalles(this.orden.id, this.detallesAux).subscribe(
+			resp =>{
+				console.log('Respuesta:',resp);
+				if(resp && (resp.errors || resp.error)){
+					let mensaje = resp.error?resp.error:resp.errors;
+					Swal.fire({
+						text: `Error al guardar la orden: ${mensaje}`,
+						icon: 'error'
+					  });
+				}else{
+					Swal.fire({
+						title: this.orden.fecha,
+						text: 'Se actualizó correctamente',
+						icon: 'success'
+					});
+					this.obtenerOrdenes();
+					this.cambioPantalla();
+				}
+			}
+		);
 	}
 
 	cambioPantalla(){
@@ -178,6 +203,7 @@ export class OrdenComponent implements OnInit {
 
 	editarOrden(orden: Orden){
 		this.orden = orden;
+		console.log('orden a editar:', orden);
 		this.detalleService.getDetalles(orden.id).subscribe(detalles => {
 			console.log('Detalles:',detalles);
 			this.detallesAux = detalles;

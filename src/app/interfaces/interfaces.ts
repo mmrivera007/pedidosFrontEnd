@@ -8,7 +8,8 @@ export interface Articulo{
 	id: number,
 	codigo: string,
 	nombre: string,
-	precio: number
+	precio: number,
+	stock: number
 }
 
 export interface Orden{
@@ -19,6 +20,7 @@ export interface Orden{
 
 export interface Detalle{
 	id: number,
+	cantidad: number,
 	orden: Orden,
 	articulo: Articulo
 }

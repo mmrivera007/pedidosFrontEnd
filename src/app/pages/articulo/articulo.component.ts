@@ -18,7 +18,8 @@ export class ArticuloComponent implements OnInit {
 		id:-1,
 		codigo:'',
 		nombre:'',
-		precio:0
+		precio:0,
+		stock:0
 	};
 
   	constructor(private articuloService: ArticuloService) { }
@@ -90,7 +91,8 @@ export class ArticuloComponent implements OnInit {
 				id:-1,
 				codigo:'',
 				nombre:'',
-				precio:0
+				precio:0,
+				stock:0
 			};
 		}
 	}

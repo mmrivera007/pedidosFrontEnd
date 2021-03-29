@@ -17,6 +17,7 @@
                         <td>Código</td>
                         <td>Nombre</td>
                         <td>Precio</td>
+                        <td>Stock</td>
                         <td>Opciones</td>
                     </tr>
                 </thead>
@@ -26,6 +27,7 @@
                         <td>{{articulo.codigo}}</td>
                         <td>{{articulo.nombre}}</td>
                         <td>{{articulo.precio | currency: 'USD'}}</td>
+                        <td>{{articulo.stock}}</td>
                         <td>
                             <button class="btn btn-info mr-1" (click)="editarArticulo(articulo)">
 									<i class="fa fa-pen"></i>
@@ -79,6 +81,10 @@
                 <div class="form-group">
                     <label>Precio</label>
                     <input type="number" class="form-control" [(ngModel)]="articulo.precio" name="precio" placeholder="Precio articulo" required>
+                </div>
+                <div class="form-group">
+                    <label>Stock</label>
+                    <input type="number" class="form-control" [(ngModel)]="articulo.stock" name="stock" placeholder="Stock articulo" required>
                 </div>
                 <hr>
                 <div class="form-group text-center">
